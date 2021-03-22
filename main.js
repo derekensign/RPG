@@ -10,7 +10,7 @@ const FACING_LEFT = 2;
 const FACING_RIGHT = 3;
 const FRAME_LIMIT = 12;
 const PLAYER_SPEED = 1.4;
-
+let HP = null
 
 
 let canvas = document.querySelector('canvas');
@@ -34,13 +34,15 @@ let heroY = 300;
 let heroImg = new Image();
 let slimeImg = new Image()
 slimeImg.src = "./images/slime.png"
-let battleImg = new Image()
-battleImg.src = "./images/BattleScreen.jpg"
+let battleImg = document.getElementById("battle")
+battleImg.classList.add("hidden")
 
 let monsters = []
 
 
 // Much of below code was adapted from the following tutorial https://dev.to/martyhimmel/animating-sprite-sheets-with-javascript-ag3
+
+//adding event listeners for presing and releasing keys
 
 window.addEventListener('keydown', keyDownListener);
 function keyDownListener(event) {
@@ -52,6 +54,8 @@ function keyUpListener(event) {
     keyPresses[event.key] = false;
 }
 
+// loading image of hero using animation
+
 function loadHeroImage() {
   heroImg.src = './images/Green-Cap-Character-16x18.png';
   heroImg.onload = function() {
@@ -59,6 +63,7 @@ function loadHeroImage() {
   };
 }
 
+// creating classes for monster and player objects
 
 class Monster {
   constructor(x, y, width, height) {
@@ -100,16 +105,23 @@ class Monster {
 }
 
 class Hero extends Monster {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, HP, EXP) {
     super(x, y, SCALED_WIDTH, SCALED_HEIGHT)
+    this.HP = 24
+    this.EXP = 0
   }
 }
 
 class Slime extends Monster {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, HP) {
     super(x, y)
+    this.HP = 6
   }
 }
+
+mainHero = new Hero (heroX, heroY)
+
+//drawMap function for drawing the map, hero, and monsters on the canvas
 
 function drawMap(frameX, frameY, canvasX, canvasY) {
   ctx.drawImage(background,0,0,800,600)
@@ -120,6 +132,8 @@ function drawMap(frameX, frameY, canvasX, canvasY) {
     monster.render()
   })
 }
+
+//creating an array of monsters randomly placed on the map
 
 createMonsters = () => {
   for(i=0; i<5; i++) {
@@ -132,6 +146,8 @@ createMonsters = () => {
 createMonsters()
 
 loadHeroImage();
+
+// gameLoop function takes w,a,s,d movement keys and maps them to the movement and animation of the hero across the map
 
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -173,6 +189,8 @@ function gameLoop() {
   window.requestAnimationFrame(gameLoop);
 }
 
+// checks for collisions between hero and monsters; starts battle sequence upon collision
+
 const checkCollision = (otherObject) => {
   if (mainHero.isCollidingWith(otherObject)) {
       startBattle()
@@ -181,13 +199,16 @@ const checkCollision = (otherObject) => {
 
 startBattle = () => {
   drawBattle()
+  console.log(mainHero.HP)
+
 }
 
 drawBattle = () => {
-  documentSelec
-  ctx.drawImage(battleImg,0,0,800,600)
+  canvas.classList.add("hidden")
+  battleImg.classList.remove("hidden")
 }
-  
+ 
+// moves and changes the direction of the hero; prevents hero from moving off canvas
 
 function moveCharacter(moveX, moveY, direction) {
   if (heroX + moveX > 0 && heroX + WIDTH + moveX < canvas.width) {
@@ -197,7 +218,8 @@ function moveCharacter(moveX, moveY, direction) {
     heroY += moveY;
   }
   currentDirection = direction;
-  mainHero = new Hero (heroX, heroY)
+  mainHero.x = heroX
+  mainHero.y = heroY
   for (i=0; i<5; i++) {
     checkCollision(monsters[i])
   }

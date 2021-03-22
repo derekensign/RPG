@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .container {
     text-align: center;
 }
@@ -13,6 +15,23 @@ canvas {
     width: 1200px;
 }
 
+.playerStats {
+    position: absolute;
+    top: 150px;
+    left: 100px;
+    height: 100px;
+    width: 200px;
+    color :white;
+    border: 5px solid white;
+    text-align: left;
+    font-family: 'Press Start 2P', cursive;
+
+}
+
 .hidden {
     display: none
+}
+
+#HP {
+    margin: 10px 0 0 10px;
 }
