@@ -1,1 +1,18 @@
+.container {
+    text-align: center;
+}
 
+canvas {
+    height: 800px;
+    width: 1200px;
+    border: 2px solid black;
+}
+
+#battle {
+    height: 800px;
+    width: 1200px;
+}
+
+.hidden {
+    display: none
+}
