@@ -30,6 +30,18 @@ canvas {
     font-family: 'Press Start 2P', cursive;
 }
 
+.playerStatsMap {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    height: 120px;
+    width: 230px;
+    color :white;
+    border: 5px solid white;
+    text-align: left;
+    font-family: 'Press Start 2P', cursive;
+}
+
 .monsterStats {
     position: absolute;
     top: 200px;
@@ -63,6 +75,10 @@ canvas {
 }
 
 .HP {
+    margin: 10px 0 0 10px;
+}
+
+.stats {
     margin: 10px 0 0 10px;
 }
 

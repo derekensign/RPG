@@ -14,6 +14,10 @@ let HP = null
 heroBattleHP = document.querySelector('#hero-HP')
 monsterBattleHP = document.querySelector('#monster-HP')
 let inBattle = false
+let mapHP = document.getElementById("hero-HP")
+let mapEXP = document.getElementById("hero-EXP")
+let mapGold = document.getElementById("hero-gold")
+let mapStats = document.getElementById("mapStats")
 
 
 let canvas = document.querySelector('canvas');
@@ -115,12 +119,13 @@ class Monster {
 }
 
 class Hero extends Monster {
-  constructor(x, y, width, height, HP, EXP, attack, potion, isAlive) {
+  constructor(x, y, width, height, HP, EXP, attack, potion, gold, isAlive) {
     super(x, y, SCALED_WIDTH, SCALED_HEIGHT, isAlive)
     this.HP = 24
     this.EXP = 0
     this.attack = 2
     this.potion = 1
+    this.gold = 10
     this.isAlive = true
   }
 }
@@ -189,6 +194,9 @@ mainHero = new Hero (heroX, heroY)
 
 function drawMap(frameX, frameY, canvasX, canvasY) {
   ctx.drawImage(background,0,0,800,600)
+  mapHP.innerText = `HP: ${mainHero.HP}`
+  mapEXP.innerText = `EXP: ${mainHero.EXP}`
+  mapGold.innerText = `GOLD: ${mainHero.gold}`
   ctx.drawImage(heroImg,
                 frameX * WIDTH, frameY * HEIGHT, WIDTH, HEIGHT,
                 canvasX, canvasY, SCALED_WIDTH, SCALED_HEIGHT)
@@ -280,16 +288,24 @@ startBattle = (battleMonster) => {
   const hasWon = () => {
     if (battleMonster.HP <= 0) {
       inBattle = false
-      mainHero.EXP += battleMonster.
+      mainHero.EXP += battleMonster.expBounty
+      mainHero.gold += battleMonster.goldBounty
       document.getElementById("map-return").classList.remove('hidden')
       document.getElementById("map-return").addEventListener("click", function() {
         console.log('return to map!')
         canvas.classList.remove("hidden")
         battleImg.classList.add("hidden")
+        mapStats.classList.remove("hidden")
         document.getElementById("map-return").classList.add('hidden')
       }
     )}
     }
+
+  const hasLost = () => {
+    if (mainHero.HP <= 0) {
+      alert('GAME OVER')
+    }
+  }
 
   const heroAttack = () => {
     attackButton.removeEventListener("click", heroAttack, false)
@@ -319,6 +335,7 @@ startBattle = (battleMonster) => {
       mainHero.HP -= Math.floor(battleMonster.attack*monsterMultiplier)
       console.log(`Hero HP: ${mainHero.HP}`)
       heroBattleHP.innerText = `HP: ${mainHero.HP}`
+      hasLost()
       turn = 1
       console.log(turn)
     }
@@ -336,15 +353,13 @@ startBattle = (battleMonster) => {
       }
     // }
       
-
-
-
     // } 
 }
 
 
 drawBattle = () => {
   canvas.classList.add("hidden")
+  mapStats.classList.add("hidden")
   battleImg.classList.remove("hidden")
 }
  
