@@ -11,7 +11,7 @@ const FACING_RIGHT = 3;
 const FRAME_LIMIT = 12;
 const PLAYER_SPEED = 1.4;
 let HP = null
-heroBattleHP = document.querySelector('#hero-HP')
+heroBattleHP = document.querySelector('#battle-hero-HP')
 monsterBattleHP = document.querySelector('#monster-HP')
 let inBattle = false
 let mapHP = document.getElementById("hero-HP")
@@ -119,9 +119,10 @@ class Monster {
 }
 
 class Hero extends Monster {
-  constructor(x, y, width, height, HP, EXP, attack, potion, gold, isAlive) {
+  constructor(x, y, width, height, HP, maxHP, EXP, attack, potion, gold, isAlive) {
     super(x, y, SCALED_WIDTH, SCALED_HEIGHT, isAlive)
     this.HP = 24
+    this.maxHP = 24
     this.EXP = 0
     this.attack = 2
     this.potion = 1
@@ -284,6 +285,8 @@ startBattle = (battleMonster) => {
   monsterBattleHP.innerText = `HP: ${battleMonster.HP}`
   console.log(mainHero.HP)
   let attackButton = document.getElementById("attack")
+  let potionButton = document.getElementById("potion")
+  potionButton.innerText = `Potion: ${mainHero.potion}`
 
   const hasWon = () => {
     if (battleMonster.HP <= 0) {
@@ -304,6 +307,22 @@ startBattle = (battleMonster) => {
   const hasLost = () => {
     if (mainHero.HP <= 0) {
       alert('GAME OVER')
+    }
+  }
+
+  const usePotion = () => {
+    if(mainHero.potion > 0) {
+      mainHero.potion--
+      potionButton.innerText = `Potion: ${mainHero.potion}`
+
+      if(mainHero.maxHP > (mainHero.HP + (mainHero.maxHP / 3))){
+      mainHero.HP += (mainHero.maxHP / 3)
+      heroBattleHP.innerText = `HP: ${mainHero.HP}`
+      }
+      else {
+        mainHero.HP = mainHero.maxHP
+        heroBattleHP.innerText = `HP: ${mainHero.HP}`
+      }
     }
   }
 
@@ -347,6 +366,7 @@ startBattle = (battleMonster) => {
         turn = 0
 
         attackButton.addEventListener("click", heroAttack)
+        potionButton.addEventListener("click", usePotion)
         // {once:true}
       
         // document.getElementById("attack").removeEventListener("click", heroAttack, false)

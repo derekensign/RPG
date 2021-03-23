@@ -33,13 +33,37 @@ canvas {
 .playerStatsMap {
     position: absolute;
     top: 50px;
-    left: 50px;
+    left: 150px;
     height: 120px;
     width: 230px;
     color :white;
     border: 5px solid white;
     text-align: left;
     font-family: 'Press Start 2P', cursive;
+}
+
+/* .map-landmark {
+    width: 80px;
+    height: 80px;
+    border: 5px solid red;
+} */
+
+#west-shop {
+    position:absolute;
+    width: 44px;
+    height: 44px;
+    border: 1px solid black;
+    top: 277px;
+    left: 260px;
+}
+
+#east-shop {
+    position:absolute;
+    width: 44px;
+    height: 44px;
+    border: 1px solid black;
+    top: 366px;
+    left: 1066px;
 }
 
 .monsterStats {
