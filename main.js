@@ -11,6 +11,9 @@ const FACING_RIGHT = 3;
 const FRAME_LIMIT = 12;
 const PLAYER_SPEED = 1.4;
 let HP = null
+heroBattleHP = document.querySelector('#hero-HP')
+monsterBattleHP = document.querySelector('#monster-HP')
+let inBattle = false
 
 
 let canvas = document.querySelector('canvas');
@@ -36,8 +39,11 @@ let slimeImg = new Image()
 slimeImg.src = "./images/slime.png"
 let battleImg = document.getElementById("battle")
 battleImg.classList.add("hidden")
-
 let monsters = []
+let level = 0
+let maxMultiplier = 1.5
+let minMultiplier = 0.5
+
 
 
 // Much of below code was adapted from the following tutorial https://dev.to/martyhimmel/animating-sprite-sheets-with-javascript-ag3
@@ -66,11 +72,12 @@ function loadHeroImage() {
 // creating classes for monster and player objects
 
 class Monster {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, isAlive) {
     this.x = x
     this.y = y
     this.width = 33
     this.height = 33
+    this.isAlive = true
   }
   
   render() {
@@ -99,25 +106,82 @@ class Monster {
     const horizHit = this.leftEdge() <= other.rightEdge() && this.rightEdge() >= other.leftEdge()
     
     const vertHit = this.topEdge() <= other.bottomEdge() && this.bottomEdge() >= other.topEdge()
-    
+
+    if (horizHit && vertHit) {
+      console.log('full hit')
+    }
     return horizHit && vertHit
   }
 }
 
 class Hero extends Monster {
-  constructor(x, y, width, height, HP, EXP) {
-    super(x, y, SCALED_WIDTH, SCALED_HEIGHT)
+  constructor(x, y, width, height, HP, EXP, attack, potion, isAlive) {
+    super(x, y, SCALED_WIDTH, SCALED_HEIGHT, isAlive)
     this.HP = 24
     this.EXP = 0
+    this.attack = 2
+    this.potion = 1
+    this.isAlive = true
   }
 }
 
 class Slime extends Monster {
-  constructor(x, y, width, height, HP) {
-    super(x, y)
+  constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
+    super(x, y, isAlive)
     this.HP = 6
+    this.attack = 2
+    this.expBounty = 5
+    this.goldBounty = 5
+    this.isAlive = true
   }
 }
+
+class Scorpion extends Monster {
+  constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
+    super(x, y, isAlive)
+    this.HP = 6
+    this.attack = 2
+    this.expBounty = 5
+    this.goldBounty = 5
+    this.isAlive = true
+  }
+}
+
+class Skeleton extends Monster {
+  constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
+    super(x, y, isAlive)
+    this.HP = 6
+    this.attack = 2
+    this.expBounty = 5
+    this.goldBounty = 5
+    this.isAlive = true
+  }
+}
+
+class Wyvern extends Monster {
+  constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
+    super(x, y, isAlive)
+    this.HP = 6
+    this.attack = 2
+    this.expBounty = 5
+    this.goldBounty = 5
+    this.isAlive = true
+  }
+}
+
+class Dragon extends Monster {
+  constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
+    super(x, y, isAlive)
+    this.HP = 6
+    this.attack = 2
+    this.expBounty = 5
+    this.goldBounty = 5
+    this.isAlive = true
+  }
+}
+
+let monstersByLevel = [Slime, Scorpion, Skeleton, Wyvern, Dragon]
+
 
 mainHero = new Hero (heroX, heroY)
 
@@ -129,21 +193,27 @@ function drawMap(frameX, frameY, canvasX, canvasY) {
                 frameX * WIDTH, frameY * HEIGHT, WIDTH, HEIGHT,
                 canvasX, canvasY, SCALED_WIDTH, SCALED_HEIGHT)
   monsters.forEach(monster => {
-    monster.render()
+    if (monster.HP > 0) {
+      monster.render()
+    }
   })
 }
 
 //creating an array of monsters randomly placed on the map
 
-createMonsters = () => {
+createMonsters = (monsterType) => {
   for(i=0; i<5; i++) {
     monsterX = Math.floor(Math.random() * (767+1))
     monsterY = Math.floor(Math.random() * (567+1))
-    monsters[i] = new Monster(monsterX, monsterY)
+    monsters[i] = new monsterType (monsterX, monsterY)
     }
 }
 
-createMonsters()
+newLevel = (level) => {
+  createMonsters(monstersByLevel[level])
+}
+
+newLevel(level)
 
 loadHeroImage();
 
@@ -192,16 +262,76 @@ function gameLoop() {
 // checks for collisions between hero and monsters; starts battle sequence upon collision
 
 const checkCollision = (otherObject) => {
+  if (inBattle) return
+  if (otherObject.HP <= 0) return
   if (mainHero.isCollidingWith(otherObject)) {
-      startBattle()
+      inBattle = true
+      startBattle(otherObject)
   }
 }
 
-startBattle = () => {
+startBattle = (battleMonster) => {
+  turn = 1
   drawBattle()
+  monsterBattleHP.innerText = `HP: ${battleMonster.HP}`
   console.log(mainHero.HP)
+ 
+  const heroAttack = () => {
+    console.log(turn)
 
+    console.log('Attack!')
+    // document.getElementById("attack").removeEventListener("click", function())
+
+    let heroMultiplier = Math.random() +.5 // number between 0.5 and 1.5
+    console.log(heroMultiplier)
+    battleMonster.HP -= Math.floor(mainHero.attack*heroMultiplier)
+    monsterBattleHP.innerText = `HP: ${battleMonster.HP}`
+    setTimeout((enemyAttack), 1000)
+  }
+    
+
+  const enemyAttack = () => {
+    
+    console.log('enemy turn')
+    let monsterMultiplier = Math.random() +.5 // number between 0.5 and 1.5
+    console.log(`Monster multiplier is ${monsterMultiplier}`)
+    console.log(`Monster attack is ${battleMonster.attack}`)
+    mainHero.HP -= Math.floor(battleMonster.attack*monsterMultiplier)
+    console.log(`Hero HP: ${battleMonster.HP}`)
+    heroBattleHP.innerText = `HP: ${battleMonster.HP}`
+    turn = 1
+    console.log(turn)
+    if (mainHero.HP <= 0) {
+      inBattle = false
+      console.log('GAME OVER')
+    }
+  }
+
+    // while(battleMonster.HP > 0) {
+      if (turn === 1) {
+        turn = 0
+        document.getElementById("attack").addEventListener("click", heroAttack)
+        // {once:true}
+      
+        // document.getElementById("attack").removeEventListener("click", heroAttack, false)
+      }
+    // }
+      
+      // if (battleMonster.HP <= 0) {
+      //   inBattle = false
+      //   document.getElementById("map-return").classList.remove('hidden')
+      //   document.getElementById("map-return").addEventListener("click", function() {
+      //     console.log('return to map!')
+      //     canvas.classList.remove("hidden")
+      //     battleImg.classList.add("hidden")
+      //     document.getElementById("map-return").classList.add('hidden')
+      //   }
+      // )}
+
+
+    // } 
 }
+
 
 drawBattle = () => {
   canvas.classList.add("hidden")
@@ -220,7 +350,7 @@ function moveCharacter(moveX, moveY, direction) {
   currentDirection = direction;
   mainHero.x = heroX
   mainHero.y = heroY
-  for (i=0; i<5; i++) {
-    checkCollision(monsters[i])
+  for (i=0; i < monsters.length; i++) {
+      checkCollision(monsters[i])
   }
 }

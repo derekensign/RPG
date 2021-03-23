@@ -14,7 +14,10 @@ canvas {
     height: 800px;
     width: 1200px;
 }
-
+#battle-screen{
+    height: 800px;
+    width: 1200px;
+}
 .playerStats {
     position: absolute;
     top: 150px;
@@ -25,13 +28,66 @@ canvas {
     border: 5px solid white;
     text-align: left;
     font-family: 'Press Start 2P', cursive;
+}
 
+.monsterStats {
+    position: absolute;
+    top: 200px;
+    left: 900px;
+    height: 100px;
+    width: 200px;
+    color :white;
+    border: 5px solid white;
+    text-align: left;
+    font-family: 'Press Start 2P', cursive;
 }
 
 .hidden {
     display: none
 }
 
-#HP {
+#menu {
+    position: absolute;
+    top: 350px;
+    left: 100px;
+    height: 100px;
+    width: 200px;
+    color: white;
+    border: 5px solid white;
+    text-align: left;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.menu-item {
+    cursor: pointer;
+}
+
+.HP {
     margin: 10px 0 0 10px;
+}
+
+#hero-container{
+    position: absolute;
+    top: 555px;
+    left: 200px;
+    height: 350px; 
+    width: 225px; 
+}
+
+#monster-container {
+    height: 250px; 
+    width: 150px; 
+    position: absolute;
+    top: 610px;
+    left: 900px;
+}
+
+#battle-hero {
+    width: 100%;
+    height: auto;
+}
+
+.battle-monster {
+    width: 100%;
+    height: auto;
 }

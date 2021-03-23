@@ -10,9 +10,23 @@
     <canvas></canvas>
   </div>
   <div id="battle" class="container">
-    <img src="./images/BattleScreen.jpg">
+    <img id="battle-screen" src="./images/BattleScreen.png">
+    <div id="hero-container">
+      <img id="battle-hero" src="./images/Adventurer.png">
+    </div>
+    <div id="monster-container">
+      <img id="slime-monster" class="battle-monster" src="./images/slime-monster.png">
+    </div>
+    <ul id="menu">Battle Menu
+      <li class="menu-item" id="attack">Attack</li>
+      <li class="menu-item" id="item">Item</li>
+      <li class="menu-item hidden" id="map-return">Return to Map</li>
+    </ul>
     <div class="playerStats">
-      <h2 id="HP">HP: 24</h2>
+      <h2 id="hero-HP"class="HP">HP: 24</h2>
+    </div>
+    <div class="monsterStats">
+      <h2 id="monster-HP"class="HP">HP: 6</h2>
     </div>
   </div>
   <script src="main.js"></script>
