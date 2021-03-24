@@ -18,6 +18,7 @@ let mapHP = document.getElementById("hero-HP")
 let mapEXP = document.getElementById("hero-EXP")
 let mapGold = document.getElementById("hero-gold")
 let mapStats = document.getElementById("mapStats")
+let potionAnswer = null
 
 
 let canvas = document.querySelector('canvas');
@@ -330,7 +331,19 @@ checkAtShop = () => {
 
   if (((heroX >= 79 && heroX <= 117) && (heroY >= 158 && heroY <= 202)) ||
      ((heroX >= 609 && heroX <= 655) && (heroY >= 227 && heroY <= 269))) {
-       console.log('Hey, Im at the shop!')
+       potionAnswer = window.confirm('Would you like to buy a potion for 10 gold?')
+       if (potionAnswer) {
+          if (mainHero.gold >= 10) {
+            mainHero.potion++
+            mainHero.gold -=10
+          }
+          else {
+            alert('You do not have enough gold!')
+          }
+       }
+       else {
+         return
+       }
      }
 
   //herox is betrween 79 and 117
