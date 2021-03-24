@@ -255,7 +255,7 @@ createMonsters = (monsterType) => {
   for(i=0; i<5; i++) {
     monsterX = Math.floor(Math.random() * (767+1))
     monsterY = Math.floor(Math.random() * (567+1))
-    if(monsterType = Dragon){
+    if(monsterType === Dragon){
       monsters[0] = new Dragon (385, 100)
     }
     else {
