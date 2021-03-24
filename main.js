@@ -18,8 +18,6 @@ let mapHP = document.getElementById("hero-HP")
 let mapEXP = document.getElementById("hero-EXP")
 let mapGold = document.getElementById("hero-gold")
 let mapStats = document.getElementById("mapStats")
-let mapWestShop = document.getElementById("west-shop")
-let mapEastShop = document.getElementById("east-shop")
 
 
 let canvas = document.querySelector('canvas');
@@ -328,6 +326,20 @@ checkLevel(mainHero.EXP)
 
 loadHeroImage();
 
+checkAtShop = () => {
+
+  if (((heroX >= 79 && heroX <= 117) && (heroY >= 158 && heroY <= 202)) ||
+     ((heroX >= 609 && heroX <= 655) && (heroY >= 227 && heroY <= 269))) {
+       console.log('Hey, Im at the shop!')
+     }
+
+  //herox is betrween 79 and 117
+  //heroy is between 158 and 202
+
+  //herox is betrween 609 and 655
+  //heroy is between 227 and 269
+
+}
 // gameLoop function takes w,a,s,d movement keys and maps them to the movement and animation of the hero across the map
 
 function gameLoop() {
@@ -366,9 +378,13 @@ function gameLoop() {
     currentLoopIndex = 0;
   }
 
+  checkAtShop()
+
   drawMap(CYCLE_LOOP[currentLoopIndex], currentDirection, heroX, heroY);
   window.requestAnimationFrame(gameLoop);
 }
+
+
 
 // checks for collisions between hero and monsters; starts battle sequence upon collision
 
@@ -393,7 +409,7 @@ startBattle = (battleMonster) => {
 
   const hasWon = () => {
     if (battleMonster.HP <= 0) {
-      if (monsters[0] = Dragon) {
+      if (monsters[0] === Dragon) {
         alert('Congratluations. You have slain the dragon and won the game!')
       }
       inBattle = false
@@ -487,8 +503,6 @@ drawBattle = () => {
   canvas.classList.add("hidden")
   mapStats.classList.add("hidden")
   mapStats.classList.add("hidden")
-  mapEastShop.classList.add("hidden")
-  mapWestShop.classList.add("hidden")
   battleImg.classList.remove("hidden")
 }
  
