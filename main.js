@@ -84,17 +84,6 @@ function loadHeroImage() {
   };
 }
 
-
-/* level up pseudo code
-
-if exp = 325 level =5 .. call newlevel(level) ... this will create 5 new monsters
-else if exp = 175 level =4
-else if exp = 75 level =3
-else if exp = 25 {level =2 and 
-
-*/
-
-
 // creating classes for monster and player objects
 
 class Monster {
@@ -188,7 +177,7 @@ class Scorpion extends Monster {
     this.HP = 9
     this.attack = 3
     this.expBounty = 10
-    this.goldBounty = 5
+    this.goldBounty = 6
     this.isAlive = true
   }
 }
@@ -199,7 +188,7 @@ class Skeleton extends Monster {
     this.HP = 14
     this.attack = 4.5
     this.expBounty = 20
-    this.goldBounty = 5
+    this.goldBounty = 7
     this.isAlive = true
   }
 }
@@ -210,7 +199,7 @@ class Golem extends Monster {
     this.HP = 20
     this.attack = 6
     this.expBounty = 25
-    this.goldBounty = 5
+    this.goldBounty = 8
     this.isAlive = true
   }
 }
@@ -221,7 +210,7 @@ class Dragon extends Monster {
     this.HP = 30
     this.attack = 8
     this.expBounty = 5
-    this.goldBounty = 5
+    this.goldBounty = 10
     this.isAlive = true
   }
 }
@@ -271,7 +260,7 @@ newLevel = (level) => {
 }
 
 const checkLevel = (exp) => {
-  if (exp === 325) {
+  if (exp === 300) {
     level = 4
     newLevel(4)
     document.getElementById('slime-monster').classList.add('hidden')
@@ -398,8 +387,6 @@ function gameLoop() {
   window.requestAnimationFrame(gameLoop);
 }
 
-
-
 // checks for collisions between hero and monsters; starts battle sequence upon collision
 
 const checkCollision = (otherObject) => {
@@ -448,20 +435,21 @@ startBattle = (battleMonster) => {
   }
 
   const usePotion = () => {
+    potionButton.removeEventListener("click", usePotion, false)
     if (mainHero.potion > 0) {
       mainHero.potion--
+      console.log(`potion count is ${mainHero.potion}`)
       potionButton.innerText = `Potion: ${mainHero.potion}`
 
       if (mainHero.maxHP > (mainHero.HP + (mainHero.maxHP / 3))){
         mainHero.HP += Math.floor(mainHero.maxHP / 3)
         heroBattleHP.innerText = `HP: ${mainHero.HP}`
-        return
       }
       else {
         mainHero.HP = mainHero.maxHP
         heroBattleHP.innerText = `HP: ${mainHero.HP}`
-      return
       }
+      setTimeout((enemyAttack), 1000)
     }
   }
 
