@@ -118,6 +118,9 @@ canvas {
     height: 250px; 
     width: 150px; 
     position: absolute;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
     top: 610px;
     left: 900px;
 }
@@ -130,4 +133,5 @@ canvas {
 .battle-monster {
     width: 100%;
     height: auto;
+    vertical-align: middle;
 }

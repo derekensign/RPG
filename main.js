@@ -41,6 +41,8 @@ let heroY = 300;
 let heroImg = new Image();
 let slimeImg = new Image()
 slimeImg.src = "./images/slime.png"
+let scorpionImg = new Image()
+scorpionImg.src = "./images/Scorpion.png"
 let battleImg = document.getElementById("battle")
 battleImg.classList.add("hidden")
 let monsters = []
@@ -73,6 +75,17 @@ function loadHeroImage() {
   };
 }
 
+
+/* level up pseudo code
+
+if exp = 325 level =5 .. call newlevel(level) ... this will create 5 new monsters
+else if exp = 175 level =4
+else if exp = 75 level =3
+else if exp = 25 {level =2 and 
+
+*/
+
+
 // creating classes for monster and player objects
 
 class Monster {
@@ -86,7 +99,13 @@ class Monster {
   
   render() {
     // x, y, width, height
-    ctx.drawImage(slimeImg, this.x, this.y, this.width, this.height)
+    if (level === 0) {
+      ctx.drawImage(slimeImg, this.x, this.y, this.width, this.height)
+    }
+
+    if (level === 1) {
+      ctx.drawImage(scorpionImg, this.x, this.y, this.width, this.height)
+      }
   }
   
   leftEdge() {
@@ -123,7 +142,7 @@ class Hero extends Monster {
     super(x, y, SCALED_WIDTH, SCALED_HEIGHT, isAlive)
     this.HP = 24
     this.maxHP = 24
-    this.EXP = 0
+    this.EXP = 25
     this.attack = 2
     this.potion = 1
     this.gold = 10
@@ -145,9 +164,9 @@ class Slime extends Monster {
 class Scorpion extends Monster {
   constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
     super(x, y, isAlive)
-    this.HP = 6
-    this.attack = 2
-    this.expBounty = 5
+    this.HP = 9
+    this.attack = 3
+    this.expBounty = 10
     this.goldBounty = 5
     this.isAlive = true
   }
@@ -156,9 +175,9 @@ class Scorpion extends Monster {
 class Skeleton extends Monster {
   constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
     super(x, y, isAlive)
-    this.HP = 6
-    this.attack = 2
-    this.expBounty = 5
+    this.HP = 14
+    this.attack = 4.5
+    this.expBounty = 20
     this.goldBounty = 5
     this.isAlive = true
   }
@@ -167,9 +186,9 @@ class Skeleton extends Monster {
 class Wyvern extends Monster {
   constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
     super(x, y, isAlive)
-    this.HP = 6
-    this.attack = 2
-    this.expBounty = 5
+    this.HP = 20
+    this.attack = 6
+    this.expBounty = 25
     this.goldBounty = 5
     this.isAlive = true
   }
@@ -178,8 +197,8 @@ class Wyvern extends Monster {
 class Dragon extends Monster {
   constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
     super(x, y, isAlive)
-    this.HP = 6
-    this.attack = 2
+    this.HP = 30
+    this.attack = 8
     this.expBounty = 5
     this.goldBounty = 5
     this.isAlive = true
@@ -190,6 +209,9 @@ let monstersByLevel = [Slime, Scorpion, Skeleton, Wyvern, Dragon]
 
 
 mainHero = new Hero (heroX, heroY)
+
+
+
 
 //drawMap function for drawing the map, hero, and monsters on the canvas
 
@@ -219,10 +241,45 @@ createMonsters = (monsterType) => {
 }
 
 newLevel = (level) => {
+  console.log(`current exp is ${mainHero.EXP}`)
+  console.log(`current level is ${level}`)
   createMonsters(monstersByLevel[level])
 }
 
-newLevel(level)
+const checkLevel = (exp) => {
+  if (exp === 325) {
+    level = 4
+    newLevel(4)
+    return
+  }
+  else if (exp === 175) {
+    level = 3
+    newLevel(3)
+    return
+  }
+  else if (exp === 75) {
+    level = 2
+    newLevel(2)
+    return
+  }
+  else if (exp === 25) {
+    level = 1
+    newLevel(1)
+    document.getElementById('slime-monster').classList.add('hidden')
+    document.getElementById('scorpion-monster').classList.remove('hidden')
+    mainHero.maxHP = 30
+    mainHero.HP = 30
+    mainHero.attack = 4
+    return
+  }
+  else if (exp === 0) {
+    level = 0
+    newLevel(0)
+    return
+  }
+}
+
+checkLevel(mainHero.EXP)
 
 loadHeroImage();
 
@@ -283,6 +340,7 @@ startBattle = (battleMonster) => {
   turn = 1
   drawBattle()
   monsterBattleHP.innerText = `HP: ${battleMonster.HP}`
+  heroBattleHP.innerText = `HP: ${mainHero.HP}`
   console.log(mainHero.HP)
   let attackButton = document.getElementById("attack")
   let potionButton = document.getElementById("potion")
