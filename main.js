@@ -399,13 +399,66 @@ const checkCollision = (otherObject) => {
 }
 
 startBattle = (battleMonster) => {
-  turn = 1
   drawBattle()
+  const heroAttack = () => {
+    attackButton.removeEventListener("click", heroAttack, false)
+
+    console.log('Attack!')
+    // document.getElementById("attack").removeEventListener("click", function())
+
+    let heroMultiplier = Math.random() +.5 // number between 0.5 and 1.5
+    console.log(heroMultiplier)
+    battleMonster.HP -= Math.floor(mainHero.attack*heroMultiplier)
+    monsterBattleHP.innerText = `HP: ${battleMonster.HP}`
+
+    hasWon()
+    setTimeout((enemyAttack), 1000)
+  }
+
+  
+  const enemyAttack = () => {
+    if (battleMonster.HP > 0) {
+      attackButton.addEventListener("click", heroAttack)
+      console.log('enemy turn')
+      let monsterMultiplier = Math.random() +.5 // number between 0.5 and 1.5
+      console.log(`Monster multiplier is ${monsterMultiplier}`)
+      console.log(`Monster attack is ${battleMonster.attack}`)
+      mainHero.HP -= Math.floor(battleMonster.attack*monsterMultiplier)
+      console.log(`Hero HP: ${mainHero.HP}`)
+      heroBattleHP.innerText = `HP: ${mainHero.HP}`
+      hasLost()
+      attackButton.addEventListener("click", heroAttack)
+      potionButton.addEventListener("click", usePotion)
+    }
+  }
+
+  const usePotion = () => {
+    potionButton.removeEventListener("click", usePotion, false)
+    if (mainHero.potion > 0) {
+      mainHero.potion--
+      console.log(`potion count is ${mainHero.potion}`)
+      potionButton.innerText = `Potion: ${mainHero.potion}`
+
+      if (mainHero.maxHP > (mainHero.HP + (mainHero.maxHP / 3))){
+        mainHero.HP += Math.floor(mainHero.maxHP / 3)
+        heroBattleHP.innerText = `HP: ${mainHero.HP}`
+      }
+      else {
+        mainHero.HP = mainHero.maxHP
+        heroBattleHP.innerText = `HP: ${mainHero.HP}`
+      }
+      setTimeout((enemyAttack), 1000)
+    }
+  }
+
+  let attackButton = document.getElementById("attack")
+  let potionButton = document.getElementById("potion")
+  attackButton.addEventListener("click", heroAttack)
+  potionButton.addEventListener("click", usePotion)
   monsterBattleHP.innerText = `HP: ${battleMonster.HP}`
   heroBattleHP.innerText = `HP: ${mainHero.HP}`
   console.log(mainHero.HP)
-  let attackButton = document.getElementById("attack")
-  let potionButton = document.getElementById("potion")
+
   potionButton.innerText = `Potion: ${mainHero.potion}`
 
   const hasWon = () => {
@@ -433,71 +486,6 @@ startBattle = (battleMonster) => {
       alert('GAME OVER')
     }
   }
-
-  const usePotion = () => {
-    potionButton.removeEventListener("click", usePotion, false)
-    if (mainHero.potion > 0) {
-      mainHero.potion--
-      console.log(`potion count is ${mainHero.potion}`)
-      potionButton.innerText = `Potion: ${mainHero.potion}`
-
-      if (mainHero.maxHP > (mainHero.HP + (mainHero.maxHP / 3))){
-        mainHero.HP += Math.floor(mainHero.maxHP / 3)
-        heroBattleHP.innerText = `HP: ${mainHero.HP}`
-      }
-      else {
-        mainHero.HP = mainHero.maxHP
-        heroBattleHP.innerText = `HP: ${mainHero.HP}`
-      }
-      setTimeout((enemyAttack), 1000)
-    }
-  }
-
-  const heroAttack = () => {
-    attackButton.removeEventListener("click", heroAttack, false)
-    console.log(turn)
-
-    console.log('Attack!')
-    // document.getElementById("attack").removeEventListener("click", function())
-
-    let heroMultiplier = Math.random() +.5 // number between 0.5 and 1.5
-    console.log(heroMultiplier)
-    battleMonster.HP -= Math.floor(mainHero.attack*heroMultiplier)
-    monsterBattleHP.innerText = `HP: ${battleMonster.HP}`
-
-    hasWon()
-    setTimeout((enemyAttack), 1000)
-  }
-
-  
-  const enemyAttack = () => {
-    
-    if (battleMonster.HP > 0) {
-      attackButton.addEventListener("click", heroAttack)
-      console.log('enemy turn')
-      let monsterMultiplier = Math.random() +.5 // number between 0.5 and 1.5
-      console.log(`Monster multiplier is ${monsterMultiplier}`)
-      console.log(`Monster attack is ${battleMonster.attack}`)
-      mainHero.HP -= Math.floor(battleMonster.attack*monsterMultiplier)
-      console.log(`Hero HP: ${mainHero.HP}`)
-      heroBattleHP.innerText = `HP: ${mainHero.HP}`
-      hasLost()
-      turn = 1
-      console.log(turn)
-    }
-
-  }
-
-    // while(battleMonster.HP > 0) {
-      if (turn === 1) {
-        turn = 0
-
-        attackButton.addEventListener("click", heroAttack)
-        potionButton.addEventListener("click", usePotion)
-        // {once:true}
-      
-        // document.getElementById("attack").removeEventListener("click", heroAttack, false)
-      }
 }
 
 
