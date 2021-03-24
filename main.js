@@ -19,6 +19,7 @@ let mapEXP = document.getElementById("hero-EXP")
 let mapGold = document.getElementById("hero-gold")
 let mapStats = document.getElementById("mapStats")
 let potionAnswer = null
+let visitedShop = false
 
 
 let canvas = document.querySelector('canvas');
@@ -62,7 +63,7 @@ let minMultiplier = 0.5
 
 // Much of below code was adapted from the following tutorial https://dev.to/martyhimmel/animating-sprite-sheets-with-javascript-ag3
 
-//adding event listeners for presing and releasing keys
+// adding event listeners for presing and releasing keys
 
 window.addEventListener('keydown', keyDownListener);
 function keyDownListener(event) {
@@ -327,31 +328,33 @@ checkLevel(mainHero.EXP)
 
 loadHeroImage();
 
-checkAtShop = () => {
+resetShopVisit = () => {
+  visitedShop = false
+}
 
+checkAtShop = () => {
+  if (visitedShop) {
+    return
+  }
   if (((heroX >= 79 && heroX <= 117) && (heroY >= 158 && heroY <= 202)) ||
      ((heroX >= 609 && heroX <= 655) && (heroY >= 227 && heroY <= 269))) {
-       potionAnswer = window.confirm('Would you like to buy a potion for 10 gold?')
-       if (potionAnswer) {
-          if (mainHero.gold >= 10) {
-            mainHero.potion++
-            mainHero.gold -=10
-          }
-          else {
-            alert('You do not have enough gold!')
-          }
-       }
-       else {
-         return
-       }
-     }
-
-  //herox is betrween 79 and 117
-  //heroy is between 158 and 202
-
-  //herox is betrween 609 and 655
-  //heroy is between 227 and 269
-
+    buyPotion = window.confirm('Would you like to buy a potion for 10 gold?')
+    if (buyPotion) {
+      if (mainHero.gold >= 10) {
+        mainHero.potion++
+        mainHero.gold -=10
+      }
+      else {
+        alert('You do not have enough gold!')
+      }
+    }
+    visitedShop = true
+    keyPresses.w = false;
+    keyPresses.a = false;
+    keyPresses.s = false;
+    keyPresses.d = false;
+    setTimeout(resetShopVisit, 2000)
+  }
 }
 // gameLoop function takes w,a,s,d movement keys and maps them to the movement and animation of the hero across the map
 
@@ -390,9 +393,7 @@ function gameLoop() {
   if (!hasMoved) {
     currentLoopIndex = 0;
   }
-
-  checkAtShop()
-
+  //console.log(`drawing loop in direction ${currentDirection} with heroX ${heroX} and heroY ${heroY}`)
   drawMap(CYCLE_LOOP[currentLoopIndex], currentDirection, heroX, heroY);
   window.requestAnimationFrame(gameLoop);
 }
@@ -428,6 +429,7 @@ startBattle = (battleMonster) => {
       inBattle = false
       mainHero.EXP += battleMonster.expBounty
       mainHero.gold += battleMonster.goldBounty
+      checkLevel(mainHero.EXP)
       document.getElementById("map-return").classList.remove('hidden')
       document.getElementById("map-return").addEventListener("click", function() {
         console.log('return to map!')
@@ -446,17 +448,19 @@ startBattle = (battleMonster) => {
   }
 
   const usePotion = () => {
-    if(mainHero.potion > 0) {
+    if (mainHero.potion > 0) {
       mainHero.potion--
       potionButton.innerText = `Potion: ${mainHero.potion}`
 
-      if(mainHero.maxHP > (mainHero.HP + (mainHero.maxHP / 3))){
-      mainHero.HP += Math.floor(mainHero.maxHP / 3)
-      heroBattleHP.innerText = `HP: ${mainHero.HP}`
+      if (mainHero.maxHP > (mainHero.HP + (mainHero.maxHP / 3))){
+        mainHero.HP += Math.floor(mainHero.maxHP / 3)
+        heroBattleHP.innerText = `HP: ${mainHero.HP}`
+        return
       }
       else {
         mainHero.HP = mainHero.maxHP
         heroBattleHP.innerText = `HP: ${mainHero.HP}`
+      return
       }
     }
   }
@@ -506,9 +510,6 @@ startBattle = (battleMonster) => {
       
         // document.getElementById("attack").removeEventListener("click", heroAttack, false)
       }
-    // }
-      
-    // } 
 }
 
 
@@ -531,7 +532,8 @@ function moveCharacter(moveX, moveY, direction) {
   currentDirection = direction;
   mainHero.x = heroX
   mainHero.y = heroY
+  checkAtShop()
   for (i=0; i < monsters.length; i++) {
-      checkCollision(monsters[i])
+    checkCollision(monsters[i])
   }
 }
