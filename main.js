@@ -18,6 +18,8 @@ let mapHP = document.getElementById("hero-HP")
 let mapEXP = document.getElementById("hero-EXP")
 let mapGold = document.getElementById("hero-gold")
 let mapStats = document.getElementById("mapStats")
+let mapWestShop = document.getElementById("west-shop")
+let mapEastShop = document.getElementById("east-shop")
 
 
 let canvas = document.querySelector('canvas');
@@ -43,6 +45,13 @@ let slimeImg = new Image()
 slimeImg.src = "./images/slime.png"
 let scorpionImg = new Image()
 scorpionImg.src = "./images/Scorpion.png"
+let skeletonImg = new Image()
+skeletonImg.src = "./images/skeleton.png"
+let golemImg = new Image()
+golemImg.src = "./images/golem.png"
+let dragonImg = new Image()
+dragonImg.src = "./images/dragon.png"
+
 let battleImg = document.getElementById("battle")
 battleImg.classList.add("hidden")
 let monsters = []
@@ -105,7 +114,19 @@ class Monster {
 
     if (level === 1) {
       ctx.drawImage(scorpionImg, this.x, this.y, this.width, this.height)
-      }
+    }
+    
+    if (level === 2) {
+      ctx.drawImage(skeletonImg, this.x, this.y, this.width, this.height)
+    }
+
+    if (level === 3) {
+      ctx.drawImage(golemImg, this.x, this.y, this.width, this.height)
+    }
+
+    if (level === 4) {
+      ctx.drawImage(dragonImg, this.x, this.y, this.width, this.height)
+    }
   }
   
   leftEdge() {
@@ -142,7 +163,7 @@ class Hero extends Monster {
     super(x, y, SCALED_WIDTH, SCALED_HEIGHT, isAlive)
     this.HP = 24
     this.maxHP = 24
-    this.EXP = 25
+    this.EXP = 0
     this.attack = 2
     this.potion = 1
     this.gold = 10
@@ -183,7 +204,7 @@ class Skeleton extends Monster {
   }
 }
 
-class Wyvern extends Monster {
+class Golem extends Monster {
   constructor(x, y, width, height, HP, attack, expBounty, goldBounty, isAlive) {
     super(x, y, isAlive)
     this.HP = 20
@@ -205,12 +226,10 @@ class Dragon extends Monster {
   }
 }
 
-let monstersByLevel = [Slime, Scorpion, Skeleton, Wyvern, Dragon]
+let monstersByLevel = [Slime, Scorpion, Skeleton, Golem, Dragon]
 
 
 mainHero = new Hero (heroX, heroY)
-
-
 
 
 //drawMap function for drawing the map, hero, and monsters on the canvas
@@ -236,8 +255,13 @@ createMonsters = (monsterType) => {
   for(i=0; i<5; i++) {
     monsterX = Math.floor(Math.random() * (767+1))
     monsterY = Math.floor(Math.random() * (567+1))
-    monsters[i] = new monsterType (monsterX, monsterY)
+    if(monsterType = Dragon){
+      monsters[0] = new Dragon (385, 100)
     }
+    else {
+      monsters[i] = new monsterType (monsterX, monsterY)
+    }
+  }
 }
 
 newLevel = (level) => {
@@ -250,16 +274,37 @@ const checkLevel = (exp) => {
   if (exp === 325) {
     level = 4
     newLevel(4)
+    document.getElementById('slime-monster').classList.add('hidden')
+    document.getElementById('scorpion-monster').classList.add('hidden')
+    document.getElementById('skeleton-monster').classList.add('hidden')
+    document.getElementById('golem-monster').classList.add('hidden')
+    document.getElementById('dragon-monster').classList.remove('hidden')
+    mainHero.maxHP = 40
+    mainHero.HP = 40
+    mainHero.attack = 7
     return
   }
   else if (exp === 175) {
     level = 3
     newLevel(3)
+    document.getElementById('slime-monster').classList.add('hidden')
+    document.getElementById('scorpion-monster').classList.add('hidden')
+    document.getElementById('skeleton-monster').classList.add('hidden')
+    document.getElementById('golem-monster').classList.remove('hidden')
+    mainHero.maxHP = 38
+    mainHero.HP = 38
+    mainHero.attack = 6
     return
   }
   else if (exp === 75) {
     level = 2
     newLevel(2)
+    document.getElementById('slime-monster').classList.add('hidden')
+    document.getElementById('scorpion-monster').classList.add('hidden')
+    document.getElementById('skeleton-monster').classList.remove('hidden')
+    mainHero.maxHP = 34
+    mainHero.HP = 34
+    mainHero.attack = 5
     return
   }
   else if (exp === 25) {
@@ -348,6 +393,9 @@ startBattle = (battleMonster) => {
 
   const hasWon = () => {
     if (battleMonster.HP <= 0) {
+      if (monsters[0] = Dragon) {
+        alert('Congratluations. You have slain the dragon and won the game!')
+      }
       inBattle = false
       mainHero.EXP += battleMonster.expBounty
       mainHero.gold += battleMonster.goldBounty
@@ -374,7 +422,7 @@ startBattle = (battleMonster) => {
       potionButton.innerText = `Potion: ${mainHero.potion}`
 
       if(mainHero.maxHP > (mainHero.HP + (mainHero.maxHP / 3))){
-      mainHero.HP += (mainHero.maxHP / 3)
+      mainHero.HP += Math.floor(mainHero.maxHP / 3)
       heroBattleHP.innerText = `HP: ${mainHero.HP}`
       }
       else {
@@ -438,6 +486,9 @@ startBattle = (battleMonster) => {
 drawBattle = () => {
   canvas.classList.add("hidden")
   mapStats.classList.add("hidden")
+  mapStats.classList.add("hidden")
+  mapEastShop.classList.add("hidden")
+  mapWestShop.classList.add("hidden")
   battleImg.classList.remove("hidden")
 }
  
